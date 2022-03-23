@@ -1,18 +1,18 @@
 const fetch = require('node-fetch');
 const shell = require('shelljs')
 const fs = require('fs');
-const config = require('./config.json');
+
 
 const API_BASE_LINK = 'https://api.github.com';
 const GITHUB_BASE_LINK = 'https://github.com';
-const REPOS_PATH = '~/Documents/Projects/';
 
 class Github {
-    constructor(username, token) {
+    constructor(username, token, reposPath) {
         this.username = username;
         this.token = token;
-        if(!fs.existsSync(REPOS_PATH)) {
-            shell.mkdir(REPOS_PATH);
+        this.reposPath = reposPath;
+        if(!fs.existsSync(reposPath)) {
+            shell.mkdir(reposPath);
         }
     }
 
@@ -30,7 +30,7 @@ class Github {
 
     async cloneRepo(repoName) {
         let link = `${GITHUB_BASE_LINK}/${this.username}/${repoName}`;
-        shell.cd(REPOS_PATH);
+        shell.cd(this.reposPath);
         const { stdout, stderr, code } = shell.exec(`git clone ${link}`, { silent: true })
         if(code !== 0) {
             console.log(stderr);
@@ -38,14 +38,16 @@ class Github {
         }
         return true;
     }
-}
-async function main() {
-    const github = new Github('PezzottiCarlo', config.token);
-    const repos = await github.getReposList();
-    for(let repo of repos.items) {
-        if(await github.cloneRepo(repo.name)){
-            console.log(`${repo.name} cloned successfully`);
+
+    async pullRepo(repoName) {
+        shell.cd(`${this.reposPath}${repoName}`);
+        const { stdout, stderr, code } = shell.exec(`git pull`, { silent: true })
+        if(code !== 0) {
+            console.log(stderr);
+            return false;
         }
+        return true;
     }
 }
-main()
+
+module.exports = Github;
