@@ -1,1 +1,1 @@
-a simple tool for managing github repos
+a simple tool for managing github repos.
