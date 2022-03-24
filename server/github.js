@@ -40,15 +40,6 @@ class Github {
         return true;
     }
 
-    async getBuildingInfo(repoName){
-        let config = {};
-        if(fs.existsSync(`${this.reposPath}${repoName}/build.json`)) {
-            config = require(`${this.reposPath}${repoName}/build.json`);
-            return config;
-        }
-        return -1;
-    }
-
     async pullRepo(repoName) {
         shell.cd(`${this.reposPath}${repoName}`);
         const { stdout, stderr, code } = shell.exec(`git pull`, { silent: true })
@@ -58,6 +49,22 @@ class Github {
         }
         return true;
     }
+
+    async getLocalRepoInfo(repoName) {
+        shell.cd(`${this.reposPath}${repoName}`);
+        const { stdout, stderr, code } = shell.exec(`git status -s`, { silent: true })
+    }
+
+    async getBuildingInfo(repoName){
+        let config = {};
+        if(fs.existsSync(`${this.reposPath}${repoName}/build.json`)) {
+            config = require(`${this.reposPath}${repoName}/build.json`);
+            return config;
+        }
+        return -1;
+    }
+
+    
 }
 
 module.exports = Github;
