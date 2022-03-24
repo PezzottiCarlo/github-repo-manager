@@ -50,9 +50,10 @@ class Github {
         return true;
     }
 
-    async getLocalRepoInfo(repoName) {
+    async isLocalRepoUpdated(repoName) {
         shell.cd(`${this.reposPath}${repoName}`);
-        const { stdout, stderr, code } = shell.exec(`git status -s`, { silent: true })
+        const { stdout, stderr, code } = shell.exec(`git remote show origin | grep "out of date" | wc -l`, { silent: true })
+        return Number(stdout.trim()) === 0;
     }
 
     async getBuildingInfo(repoName){

@@ -8,8 +8,15 @@ const App = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch('http://127.0.0.1:8081/getList');
-      const data = await response.json();
+      let response = await fetch('getList');
+      let data = await response.json();
+      for(let item of data.items){
+        response = await fetch(`getInfo/${item.name}`);
+        let info = await response.json();
+        console.log(info);
+        item.canBuild = info.buildinfo !== -1;
+        item.keepUpdate = info.keepUpdate;
+      } 
       setRepos(data);
     };
     fetchData();
