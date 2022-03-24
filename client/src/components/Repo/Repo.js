@@ -1,4 +1,6 @@
 import "./Repo.css";
+import { MdRecycling,MdOutlineDownloading} from 'react-icons/md';
+import {CgGitPull} from 'react-icons/cg';
 
 const Repo = (props) => {
     console.log(props);
@@ -8,8 +10,9 @@ const Repo = (props) => {
                 <a className="repo-link" href={props.repo.html_url}>{props.repo.name}</a>
             </div>
             <div className="repo-action">
-                <button onClick={() => props.onClick(props.repo.id)}>Clone</button>
-                <button onClick={() => props.onClick(props.repo.id)}>Pull</button>
+                <MdRecycling className="repo-icon keepUpdate" />
+                <MdOutlineDownloading className="repo-icon download" />
+                <CgGitPull className="repo-icon update" />
             </div>
         </div>
     );

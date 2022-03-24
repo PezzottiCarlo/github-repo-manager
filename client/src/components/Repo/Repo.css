@@ -15,6 +15,15 @@
 
 .repo-action{
     margin-right: 1rem;
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    text-decoration: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    min-width: 15rem;
 }
 
 .repo-link{
@@ -22,4 +31,27 @@
     font-size: 1.5rem;
     font-weight: bold;
     text-decoration: none;
+}
+
+.repo-icon{
+    padding : 0.2rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+}
+.repo-icon:hover{
+    padding: 1rem;
+}
+
+.download{
+    background-color: #00adb5;
+    
+}
+
+.keepUpdate{
+    background-color: #00b561;
+}
+
+.update{
+    background-color: #005eb5;
 }
