@@ -6,6 +6,7 @@ const fs = require('fs');
 const API_BASE_LINK = 'https://api.github.com';
 const GITHUB_BASE_LINK = 'https://github.com';
 
+
 class Github {
     constructor(username, token, reposPath) {
         this.username = username;
@@ -37,6 +38,15 @@ class Github {
             return false;
         }
         return true;
+    }
+
+    async getBuildingInfo(repoName){
+        let config = {};
+        if(fs.existsSync(`${this.reposPath}${repoName}/build.json`)) {
+            config = require(`${this.reposPath}${repoName}/build.json`);
+            return config;
+        }
+        return -1;
     }
 
     async pullRepo(repoName) {
