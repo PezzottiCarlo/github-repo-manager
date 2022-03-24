@@ -7,17 +7,20 @@ const App = () => {
   const [repos, setRepos] = useState([]);
 
   useEffect(() => {
-    fetch('getList')
-      .then(response => response.json())
-      .then(data => setRepos(data));
+    const fetchData = async () => {
+      const response = await fetch('http://127.0.0.1:8081/getList');
+      const data = await response.json();
+      setRepos(data);
+    };
+    fetchData();
   }, [])
 
   return (
     <div className="App">
-    { (repos.length > 0) ? (
+    { (repos.items && repos.items.length > 0) ? (
       <div className="repo-list">
-        {repos.map(repo => (
-          <Repo key={repo.id} repo={repo} />
+        {repos.items.map(repo => (
+          <Repo className="repo" key={repo.id} repo={repo} />
         ))}
       </div>) : (
         <h1>Errore</h1>
