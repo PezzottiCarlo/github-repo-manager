@@ -11,6 +11,7 @@ let username = config.username;
 
 const github = new Github(config.username, config.token, REPOS_PATH);
 
+
 app.use(cors());
 
 app.listen(config.port, () => {
@@ -32,5 +33,7 @@ app.get('/getInfo/:repo', async (req, res) => {
 
 app.get('/autoUpdate/:repo/:flag', async (req, res) => {
     auto[req.params.repo] = req.params.flag==='true';
+    console.log(auto);
     res.json({ statusCode: 0,status:auto[req.params.repo]});
 })
+
