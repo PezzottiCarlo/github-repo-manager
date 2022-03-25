@@ -11,7 +11,7 @@ let username = config.username;
 
 const github = new Github(config.username, config.token, REPOS_PATH);
 
-
+app.use(express.json())
 app.use(cors());
 app.use("/", express.static("../build"))
 
@@ -39,10 +39,7 @@ app.get('/autoUpdate/:repo/:flag', async (req, res) => {
 })
 
 app.post('/github', async (req, res) => {
-    /* fixare
     console.log("pushed")
     console.log(req.body)
-    */
-
     res.sendStatus(200);
 })
