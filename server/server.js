@@ -40,8 +40,9 @@ app.get('/keepUpdate/:repo/:flag', async (req, res) => {
 })
 
 app.post('/github', async (req, res) => {
-    let pushedInfo = JSON.parse(req.body);
+    let pushedInfo = req.body
     let buildInfo = await github.getBuildingInfo(pushedInfo.repository.name);
-    Utility.buildRepo(buildInfo.build);
+    console.log(buildInfo);
+    Utility.buildRepo(buildInfo);
     res.sendStatus(200);
 })
