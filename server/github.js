@@ -57,7 +57,7 @@ class Github {
     }
 
     async getBuildingInfo(repoName){
-        const response = await fetch(`${API_BASE_LINK}/${this.username}/${repoName}/contents/build.json`,{
+        const response = await fetch(`${API_BASE_LINK}/repos/${this.username}/${repoName}/contents/build.json`,{
             headers: {
                 'Authorization': `token ${this.token}`,
                 'User-Agent': 'node.js',
@@ -67,11 +67,18 @@ class Github {
         if(response.status !== 200) {
             return {};
         }else{
-            //get contet of file
+            const buildinfo = await response.json();
+            const res = await fetch(buildinfo.download_url,{
+                headers: {
+                    'Authorization': `token ${this.token}`,
+                    'User-Agent': 'node.js',
+                    'Content-Type': 'application/json'
+                }
+            });
+            return await res.json();
         }
     }
-
-    
 }
 
 module.exports = Github;
+

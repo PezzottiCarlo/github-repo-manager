@@ -13,6 +13,7 @@ const github = new Github(config.username, config.token, REPOS_PATH);
 
 
 app.use(cors());
+app.use("/", express.static("../build"))
 
 app.listen(config.port, () => {
     console.log(`Server running on port ${config.port}`);
@@ -26,9 +27,9 @@ app.get('/getList', async (req, res) => {
 app.get('/getInfo/:repo', async (req, res) => {
     let repoName = req.params.repo;
     let updated = await github.isLocalRepoUpdated(repoName);
-    let buildinfo = await github.getBuildingInfo(repoName);
+    let buildInfo = await github.getBuildingInfo(repoName);
     let keepUpdate = auto[repoName] || false;
-    res.send({ updated, buildinfo,keepUpdate });
+    res.send({ updated, buildInfo,keepUpdate });
 })
 
 app.get('/autoUpdate/:repo/:flag', async (req, res) => {
@@ -37,3 +38,7 @@ app.get('/autoUpdate/:repo/:flag', async (req, res) => {
     res.json({ statusCode: 0,status:auto[req.params.repo]});
 })
 
+app.post('/payload', async (req, res) => {
+    let push = JSON.parse(req.body.read)
+    console.log(push);
+})

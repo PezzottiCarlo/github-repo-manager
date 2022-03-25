@@ -16,8 +16,9 @@ const App = () => {
         for (let item of data.items) {
           response = await fetch(`getInfo/${item.name}`);
           let info = await response.json();
-          item.canBuild = info.buildinfo !== -1;
+          item.buildInfo = info.buildInfo;
           item.keepUpdate = info.keepUpdate;
+          item.updated = info.updated;
         }
         setRepos(data);
         setReposStatus(1);

@@ -6,18 +6,16 @@ import Utility from "./Utility";
 
 const Repo = (props) => {
 
-    const [repoBuild, setRepoBuild] = useState(props.repo.canBuild);
-    const [repoAutoUpdate, setAutoUpdate] = useState(props.repo.keepUpdate);
+    const [repoKeepUpdate, setKeepUpdate] = useState(props.repo.keepUpdate);
 
     useEffect(() => {
-        console.log(props.repo.keepUpdate);
     },[])
 
-    const clickAutoUpdate = async (e) => {
-        let result = await Utility.autoUpdate(props.repo.name,!repoAutoUpdate);
+    const clickKeepUpdate = async (e) => {
+        let result = await Utility.autoUpdate(props.repo.name,!repoKeepUpdate);
         console.log(result);
         if(result.statusCode === 0){
-            setAutoUpdate(!repoAutoUpdate);
+            setKeepUpdate(!repoKeepUpdate);
         }
     }
     const clickDownload= async (e) => {
@@ -35,10 +33,10 @@ const Repo = (props) => {
                 <a className="repo-link" href={props.repo.html_url}>{props.repo.name}</a>
             </div>
             <div className="repo-action">
-                <MdRecycling className={`repo-icon ${(repoAutoUpdate)?"keepUpdate":"inactive"}`} onClick={clickAutoUpdate}/>
+                <MdRecycling className={`repo-icon ${(repoKeepUpdate)?"keepUpdate":"inactive"}`} onClick={clickKeepUpdate}/>
                 <MdOutlineDownloading className="repo-icon download" onClick={clickDownload}/>
                 <CgGitPull className="repo-icon update" onClick={clickPull}/>
-                {(repoBuild)? <MdOutlineBuildCircle className="repo-icon build" onClick={clickBuild}/>:null}
+                {(Object.keys(props.repo.buildInfo).length === 0)?null:<MdOutlineBuildCircle className="repo-icon build" onClick={clickBuild}/>}
             </div>
         </div>
     );
