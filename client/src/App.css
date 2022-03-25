@@ -9,7 +9,24 @@
   flex-wrap: wrap;
   color: white;
 }
+.App-center{
+  background-color: #282c34;
+  min-height: 100vh;
+  max-width: 100%;
+  overflow-x: hidden;
+  display: flex;
+  justify-content:center;
+  align-items: center;
+  color: white;
+}
+
 
 .repo{
   margin-top:1rem;
+}
+.loading{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }

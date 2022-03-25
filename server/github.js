@@ -57,12 +57,18 @@ class Github {
     }
 
     async getBuildingInfo(repoName){
-        let config = {};
-        if(fs.existsSync(`${this.reposPath}${repoName}/build.json`)) {
-            config = require(`${this.reposPath}${repoName}/build.json`);
-            return config;
+        const response = await fetch(`${API_BASE_LINK}/${this.username}/${repoName}/contents/build.json`,{
+            headers: {
+                'Authorization': `token ${this.token}`,
+                'User-Agent': 'node.js',
+                'Content-Type': 'application/json'
+            }
+        });
+        if(response.status !== 200) {
+            return {};
+        }else{
+            //get contet of file
         }
-        return -1;
     }
 
     
