@@ -2,13 +2,14 @@ import './App.css';
 
 import { useEffect, useState } from 'react';
 import Repo from './components/Repo/Repo';
-import { TailSpin } from 'react-loader-spinner'
+import { Bars } from 'react-loader-spinner'
 import LoadingBar from 'react-top-loading-bar'
 const App = () => {
 
   const [reposStatus, setReposStatus] = useState(0);
   const [repos, setRepos] = useState([]);
   const [progress, setProgress] = useState(0)
+  const [progressMessage, setProgressMessage] = useState("")
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,8 +18,9 @@ const App = () => {
         let data = await response.json();
         let tmp = 0;
         for (let item of data.items) {
-          tmp += (100/data.items.length);
+          tmp += (100 / data.items.length);
           setProgress(tmp)
+          setProgressMessage(`${item.name} is being fetched`)
           response = await fetch(`getInfo/${item.name}`);
           let info = await response.json();
           item.buildInfo = info.buildInfo;
@@ -36,7 +38,7 @@ const App = () => {
 
   return (
     <div className={(reposStatus === 1) ? "App" : "App-center"}>
-    <LoadingBar
+      <LoadingBar
         color='#0892d0'
         progress={progress}
       />
@@ -46,7 +48,11 @@ const App = () => {
             <Repo className="repo" key={repo.id} repo={repo} />
           ))}
         </div>) : (
-        (reposStatus === 2) ? <h1>Error</h1> : <div className='loading'><TailSpin height="40" width="40" color='rgba(255,255,255,0.3)' /></div>
+        (reposStatus === 2) ? <h1>Error</h1> :
+          <div className='loading'>
+            <h2 className='loading-message'>{progressMessage}</h2>
+            <Bars height="40" width="40" color='rgba(255,255,255,0.3)' />
+          </div>
       )
       }
     </div>

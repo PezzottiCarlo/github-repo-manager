@@ -26,7 +26,12 @@
 }
 .loading{
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.loading-message{
+  font-size: 1rem;
+  color:rgba(255,255,255,0.3)
 }
