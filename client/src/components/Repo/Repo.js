@@ -13,7 +13,7 @@ const Repo = (props) => {
     },[])
 
     const clickKeepUpdate = async (e) => {
-        let result = await Utility.autoUpdate(props.repo.name,!repoKeepUpdate);
+        let result = await Utility.keepUpdate(props.repo.name,!repoKeepUpdate);
         console.log(result);
         if(result.statusCode === 0){
             setKeepUpdate(!repoKeepUpdate);

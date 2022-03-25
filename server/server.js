@@ -1,6 +1,7 @@
-const Github = require('./github.js');
-const config = require('./config.json');
-let auto = [];
+const Github = require('./utility/github.js');
+const Utility = require('./utility/utility.js');
+const config = require('./config/config.json');
+let auto = Utility.getKeepUpdate();
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -32,9 +33,8 @@ app.get('/getInfo/:repo', async (req, res) => {
     res.send({ updated, buildInfo,keepUpdate });
 })
 
-app.get('/autoUpdate/:repo/:flag', async (req, res) => {
+app.get('/keepUpdate/:repo/:flag', async (req, res) => {
     auto[req.params.repo] = req.params.flag==='true';
-    console.log(auto);
     res.json({ statusCode: 0,status:auto[req.params.repo]});
 })
 
