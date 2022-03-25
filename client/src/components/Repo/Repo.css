@@ -15,16 +15,17 @@
 
 .repo-name{
     min-width: 15rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 1.5rem;
 }
 
 .repo-link{
     color: white;
-    font-size: 1.5rem;
     font-weight: bold;
     text-decoration: none;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    margin-left: 1rem;
 }
 
 .repo-action{
@@ -68,4 +69,8 @@
 
 .build{
     background-color: #8c49b8;
+}
+.repo-out-of-date{
+    font-size: 1rem;
+    color: #dbb922;
 }

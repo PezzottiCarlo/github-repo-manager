@@ -35,6 +35,7 @@ app.get('/getInfo/:repo', async (req, res) => {
 
 app.get('/keepUpdate/:repo/:flag', async (req, res) => {
     auto[req.params.repo] = req.params.flag==='true';
+    Utility.setKeepUpdate(auto);
     res.json({ statusCode: 0,status:auto[req.params.repo]});
 })
 

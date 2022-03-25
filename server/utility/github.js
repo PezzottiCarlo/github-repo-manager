@@ -12,13 +12,13 @@ class Github {
         this.username = username;
         this.token = token;
         this.reposPath = reposPath;
-        if(!fs.existsSync(reposPath)) {
+        if (!fs.existsSync(reposPath)) {
             shell.mkdir(reposPath);
         }
     }
 
     async getReposList() {
-        const response = await fetch(`${API_BASE_LINK}/search/repositories?q=user:${this.username}`,{
+        const response = await fetch(`${API_BASE_LINK}/search/repositories?q=user:${this.username}`, {
             headers: {
                 'Authorization': `token ${this.token}`,
                 'User-Agent': 'node.js',
@@ -33,7 +33,7 @@ class Github {
         let link = `${GITHUB_BASE_LINK}/${this.username}/${repoName}`;
         shell.cd(this.reposPath);
         const { stdout, stderr, code } = shell.exec(`git clone ${link}`, { silent: true })
-        if(code !== 0) {
+        if (code !== 0) {
             console.log(stderr);
             return false;
         }
@@ -43,7 +43,7 @@ class Github {
     async pullRepo(repoName) {
         shell.cd(`${this.reposPath}${repoName}`);
         const { stdout, stderr, code } = shell.exec(`git pull`, { silent: true })
-        if(code !== 0) {
+        if (code !== 0) {
             console.log(stderr);
             return false;
         }
@@ -51,24 +51,27 @@ class Github {
     }
 
     async isLocalRepoUpdated(repoName) {
-        shell.cd(`${this.reposPath}${repoName}`);
-        const { stdout, stderr, code } = shell.exec(`git remote show origin | grep "out of date" | wc -l`, { silent: true })
-        return Number(stdout.trim()) === 0;
+        if (fs.existsSync(`${this.reposPath}${repoName}`)) {
+            shell.cd(`${this.reposPath}${repoName}`);
+            const { stdout, stderr, code } = shell.exec(`git remote show origin | grep "out of date" | wc -l`, { silent: true })
+            return Number(stdout.trim()) === 0;
+        }
+        return false;
     }
 
-    async getBuildingInfo(repoName){
-        const response = await fetch(`${API_BASE_LINK}/repos/${this.username}/${repoName}/contents/build.json`,{
+    async getBuildingInfo(repoName) {
+        const response = await fetch(`${API_BASE_LINK}/repos/${this.username}/${repoName}/contents/build.json`, {
             headers: {
                 'Authorization': `token ${this.token}`,
                 'User-Agent': 'node.js',
                 'Content-Type': 'application/json'
             }
         });
-        if(response.status !== 200) {
+        if (response.status !== 200) {
             return {};
-        }else{
+        } else {
             const buildinfo = await response.json();
-            const res = await fetch(buildinfo.download_url,{
+            const res = await fetch(buildinfo.download_url, {
                 headers: {
                     'Authorization': `token ${this.token}`,
                     'User-Agent': 'node.js',

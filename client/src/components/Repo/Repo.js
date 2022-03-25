@@ -1,6 +1,6 @@
 import "./Repo.css";
 import { useEffect,useState} from "react";
-import { MdRecycling,MdOutlineDownloading,MdOutlineBuildCircle} from 'react-icons/md';
+import { MdRecycling,MdOutlineDownloading,MdOutlineBuildCircle,MdUpdate} from 'react-icons/md';
 import {CgGitPull} from 'react-icons/cg';
 import {FaGithub} from 'react-icons/fa';
 import Utility from "./Utility";
@@ -31,7 +31,9 @@ const Repo = (props) => {
     return (
         <div className="repo">
             <div className="repo-name">
-                <a className="repo-link" href={props.repo.html_url}><FaGithub/ > {props.repo.name}</a>
+                <FaGithub />
+                <a className="repo-link" href={props.repo.html_url}>{props.repo.name}</a>
+                {(!props.repo.updated)?<MdUpdate className="repo-out-of-date"/>:null}
             </div>
             <div className="repo-action">
                 <MdRecycling className={`repo-icon ${(repoKeepUpdate)?"keepUpdate":"inactive"}`} onClick={clickKeepUpdate}/>
