@@ -38,7 +38,11 @@ app.get('/autoUpdate/:repo/:flag', async (req, res) => {
     res.json({ statusCode: 0,status:auto[req.params.repo]});
 })
 
-app.post('/payload', async (req, res) => {
-    let push = JSON.parse(req.body.read)
-    console.log(push);
+app.post('/github', async (req, res) => {
+    /* fixare
+    console.log("pushed")
+    console.log(req.body)
+    */
+
+    res.sendStatus(200);
 })
