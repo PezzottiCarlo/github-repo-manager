@@ -9,7 +9,7 @@ class Utility {
         fs.writeFileSync('./config/keepUpdated.json', JSON.stringify(data))
     }
     static buildRepo(build){
-        for(let step of build){
+        for(let step of build.commands){
             console.log(step);
             const { stdout, stderr, code } = shell.exec(step,{silent:true});
             if(code!==0){
