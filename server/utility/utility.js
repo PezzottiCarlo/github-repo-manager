@@ -8,14 +8,12 @@ class Utility {
     static setKeepUpdate(data) {
         fs.writeFileSync('./config/keepUpdated.json', JSON.stringify(data))
     }
-    static buildRepo(build){
-        for(let step of build.commands){
-            console.log(step);
-            const { stdout, stderr, code } = shell.exec(step,{silent:true});
-            if(code!==0){
-                console.log(stderr);
-                return false;
-            }
+    static buildRepo(build) {
+        for (let step of build.commands) {
+            let { stdout, stderr, code } =shell.exec("pwd", { silent: true })
+            console.log(stdout);
+            if (step.includes('cd')) shell.cd(step.split("cd ")[1], { silent: true })
+            else shell.exec(step, { silent: true })
         }
     }
 }
