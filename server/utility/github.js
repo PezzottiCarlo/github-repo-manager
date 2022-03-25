@@ -30,9 +30,11 @@ class Github {
     }
 
     async cloneRepo(repoName) {
+        let current = shell.pwd();
         let link = `${GITHUB_BASE_LINK}/${this.username}/${repoName}`;
         shell.cd(this.reposPath);
         const { stdout, stderr, code } = shell.exec(`git clone ${link}`, { silent: true })
+        shell.cd(current);
         if (code !== 0) {
             console.log(stderr);
             return false;
@@ -41,8 +43,10 @@ class Github {
     }
 
     async pullRepo(repoName) {
+        let current = shell.pwd();
         shell.cd(`${this.reposPath}${repoName}`);
         const { stdout, stderr, code } = shell.exec(`git pull`, { silent: true })
+        shell.cd(current);
         if (code !== 0) {
             console.log(stderr);
             return false;
@@ -51,9 +55,11 @@ class Github {
     }
 
     async isLocalRepoUpdated(repoName) {
+        let current = shell.pwd();
         if (fs.existsSync(`${this.reposPath}${repoName}`)) {
             shell.cd(`${this.reposPath}${repoName}`);
             const { stdout, stderr, code } = shell.exec(`git remote show origin | grep "out of date" | wc -l`, { silent: true })
+            shell.cd(current);
             return Number(stdout.trim()) === 0;
         }
         return false;
