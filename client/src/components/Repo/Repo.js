@@ -69,12 +69,13 @@ const Repo = (props) => {
         })
         toast.promise(promise,
             {
-                pending: `${repoName} is pulling`,
-                success: `${repoName} is pulled`,
-                error: (error) => `${repoName} is failed to pull: ${error}`,
+                pending: `${repoName} is updating...`,
+                success: `${repoName} is updated`,
+                error: (error) => `${repoName} is failed to update: ${error}`,
             })
     }
     const clickBuild = async (e) => {
+        console.log(repoName);
         let promise = new Promise(async (resolve, reject) => {
             let result = await Utility.build(repoName);
             if (!result.success) {
@@ -108,16 +109,14 @@ const Repo = (props) => {
                 </div>
             </div>
             <ToastContainer
-                theme="dark"
+                theme="light"
                 position="top-right"
-                autoClose={2000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
+                autoClose={1000}
+                pauseOnHover={false}
+                pauseOnFocusLoss={false}
+                draggable={false}
+                closeButton={false}
+                closeOnClick={false}
             />
         </div>
     );
