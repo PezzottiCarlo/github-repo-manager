@@ -1,4 +1,4 @@
-# Project Title
+# Github repo manager
 
 A simple manager of your repositories
 
