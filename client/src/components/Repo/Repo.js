@@ -20,6 +20,8 @@ const Repo = (props) => {
         }
     }
     const clickDownload= async (e) => {
+        let result = await Utility.download(props.repo.name);
+        if(!result.success) alert(result.message);
     }
     const clickPull = async (e) => {
         let result = await Utility.pull(props.repo.name);

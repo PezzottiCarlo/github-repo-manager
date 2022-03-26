@@ -45,6 +45,18 @@ app.get('/pull/:repo', async (req, res) => {
     else res.send({ success: false, message: "Repo not downloaded" });
 })
 
+app.get('/download/:repo', async (req, res) => {
+    let repoName = req.params.repo;  
+    if(!Utility.isRepoDownloaded(repoName, REPOS_PATH)){
+        console.log("Downloading repo: " + repoName);
+        if(await github.cloneRepo(repoName))
+            res.send({ success: true });
+        else
+            res.send({ success: false,message: "Error while downloading repo" });
+    }
+    else res.send({ success: false, message: "Repo already downloaded" });
+})
+
 app.get('/keepUpdate/:repo/:flag', async (req, res) => {
     let hook;
     let kUFlag = req.params.flag === 'true';
