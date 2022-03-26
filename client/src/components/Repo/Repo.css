@@ -36,8 +36,8 @@
     text-decoration: none;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
     align-items: center;
+    justify-content: center;
     min-width: 15rem;
 }
 
@@ -46,6 +46,7 @@
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.1s ease-in-out;
+    margin-left: 1rem;
 }
 .repo-icon:hover{
     padding: 1rem;

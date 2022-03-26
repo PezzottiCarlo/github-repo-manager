@@ -23,10 +23,10 @@ const App = () => {
           setProgressMessage(`${item.name} is being fetched`)
           response = await fetch(`getInfo/${item.name}`);
           let info = await response.json();
-          console.log(item.name,info);
           item.buildInfo = info.buildInfo;
           item.keepUpdate = info.keepUpdate;
           item.updated = info.updated;
+          item.downloaded = info.downloaded;
         }
         setRepos(data);
         setReposStatus(1);

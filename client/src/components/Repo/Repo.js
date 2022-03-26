@@ -8,6 +8,12 @@ import Utility from "./Utility";
 const Repo = (props) => {
 
     const [repoKeepUpdate, setKeepUpdate] = useState(props.repo.keepUpdate);
+    const [htmlUrl, setHtmlUrl] = useState(props.repo.htmlUrl);
+    const [repoName, setRepoName] = useState(props.repo.name);
+    const [repoUpdated, setRepoUpdated] = useState(props.repo.updated);
+    const [repoDownloaded, setRepoDownloaded] = useState(props.repo.downloaded);
+    const [repoBuildInfo, setRepoBuildInfo] = useState(props.repo.buildInfo);
+
 
     useEffect(() => {
     },[])
@@ -22,10 +28,12 @@ const Repo = (props) => {
     const clickDownload= async (e) => {
         let result = await Utility.download(props.repo.name);
         if(!result.success) alert(result.message);
+        else {setRepoDownloaded(true);setRepoUpdated(true);}
     }
     const clickPull = async (e) => {
         let result = await Utility.pull(props.repo.name);
         if(!result.success) alert(result.message);
+        else {setRepoUpdated(true);setRepoDownloaded(true);}
     }
     const clickBuild = async (e) => {
     }
@@ -36,14 +44,13 @@ const Repo = (props) => {
         <div className="repo">
             <div className="repo-name">
                 <FaGithub />
-                <a className="repo-link" href={props.repo.html_url}>{props.repo.name}</a>
-                {(!props.repo.updated)?<MdUpdate className="repo-out-of-date"/>:null}
+                <a className="repo-link" href={htmlUrl}>{repoName}</a>
+                {(!repoUpdated)?<MdUpdate className="repo-out-of-date"/>:null}
             </div>
             <div className="repo-action">
+                {(Object.keys(repoBuildInfo).length === 0)?null:<MdOutlineBuildCircle className="repo-icon build" onClick={clickBuild}/>}
                 <MdRecycling className={`repo-icon ${(repoKeepUpdate)?"keepUpdate":"inactive"}`} onClick={clickKeepUpdate}/>
-                <MdOutlineDownloading className="repo-icon download" onClick={clickDownload}/>
-                <CgGitPull className="repo-icon update" onClick={clickPull}/>
-                {(Object.keys(props.repo.buildInfo).length === 0)?null:<MdOutlineBuildCircle className="repo-icon build" onClick={clickBuild}/>}
+                {(repoDownloaded)?<CgGitPull className="repo-icon update" onClick={clickPull}/>:<MdOutlineDownloading className="repo-icon download" onClick={clickDownload}/>}   
             </div>
         </div>
     );

@@ -27,10 +27,11 @@ app.get('/getList', async (req, res) => {
 
 app.get('/getInfo/:repo', async (req, res) => {
     let repoName = req.params.repo;
+    let downloaded = await Utility.isRepoDownloaded(repoName, REPOS_PATH);
     let updated = await github.isLocalRepoUpdated(repoName);
     let buildInfo = await github.getBuildingInfo(repoName);
     let keepUpdate = (keepUpdateTmp[repoName] === undefined) ? false : keepUpdateTmp[repoName].state;
-    res.send({ updated, buildInfo, keepUpdate });
+    res.send({ downloaded,updated, buildInfo, keepUpdate });
 })
 
 app.get('/pull/:repo', async (req, res) => {
