@@ -1,8 +1,9 @@
 import "./Repo.css";
 import { useEffect,useState} from "react";
-import { MdRecycling,MdOutlineDownloading,MdOutlineBuildCircle,MdUpdate} from 'react-icons/md';
-import {CgGitPull} from 'react-icons/cg';
+import { MdOutlineBuildCircle,MdUpdate} from 'react-icons/md';
+import {RiDownloadCloudFill} from 'react-icons/ri';
 import {FaGithub} from 'react-icons/fa';
+import {AiOutlineCloudSync} from 'react-icons/ai';
 import Utility from "./Utility";
 
 const Repo = (props) => {
@@ -49,8 +50,8 @@ const Repo = (props) => {
             </div>
             <div className="repo-action">
                 {(Object.keys(repoBuildInfo).length === 0)?null:<MdOutlineBuildCircle className="repo-icon build" onClick={clickBuild}/>}
-                <MdRecycling className={`repo-icon ${(repoKeepUpdate)?"keepUpdate":"inactive"}`} onClick={clickKeepUpdate}/>
-                {(repoDownloaded)?<CgGitPull className="repo-icon update" onClick={clickPull}/>:<MdOutlineDownloading className="repo-icon download" onClick={clickDownload}/>}   
+                <AiOutlineCloudSync className={`repo-icon ${(repoKeepUpdate)?"keepUpdate":"inactive"}`} onClick={clickKeepUpdate}/>
+                {(repoDownloaded)?<MdUpdate className="repo-icon update" onClick={clickPull}/>:<RiDownloadCloudFill className="repo-icon download" onClick={clickDownload}/>}   
             </div>
         </div>
     );
