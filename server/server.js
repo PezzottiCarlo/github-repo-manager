@@ -29,9 +29,9 @@ app.get('/getInfo/:repo', async (req, res) => {
     let repoName = req.params.repo;
     let downloaded = await github.isRepoDownloaded(repoName);
     let updated = await github.isLocalRepoUpdated(repoName);
-    let buildInfo = await github.isBuildable(repoName);
+    let buildable = await github.isBuildable(repoName);
     let keepUpdate = (keepUpdateTmp[repoName] === undefined) ? false : keepUpdateTmp[repoName].state;
-    res.send({ downloaded,updated, buildInfo, keepUpdate });
+    res.send({ downloaded,updated, buildable, keepUpdate });
 })
 
 app.get('/pull/:repo', async (req, res) => {

@@ -13,7 +13,7 @@ const Repo = (props) => {
     const [repoName, setRepoName] = useState(props.repo.name);
     const [repoUpdated, setRepoUpdated] = useState(props.repo.updated);
     const [repoDownloaded, setRepoDownloaded] = useState(props.repo.downloaded);
-    const [repoBuildInfo, setRepoBuildInfo] = useState(props.repo.buildInfo);
+    const [repoIsBuildable, setBuildable] = useState(props.repo.buildable);
 
 
     useEffect(() => {
@@ -51,7 +51,7 @@ const Repo = (props) => {
                 {(!repoUpdated)?<MdUpdate className="repo-out-of-date"/>:null}
             </div>
             <div className="repo-action">
-                {(Object.keys(repoBuildInfo).length === 0)?null:<MdOutlineBuildCircle className="repo-icon build" onClick={clickBuild}/>}
+                {(repoIsBuildable)?<MdOutlineBuildCircle className="repo-icon build" onClick={clickBuild}/>:null}
                 <AiOutlineCloudSync className={`repo-icon ${(repoKeepUpdate)?"keepUpdate":"inactive"}`} onClick={clickKeepUpdate}/>
                 {(repoDownloaded)?<MdUpdate className="repo-icon update" onClick={clickPull}/>:<RiDownloadCloudFill className="repo-icon download" onClick={clickDownload}/>}   
             </div>

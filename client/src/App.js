@@ -23,7 +23,7 @@ const App = () => {
           setProgressMessage(`${item.name} is being fetched`)
           response = await fetch(`getInfo/${item.name}`);
           let info = await response.json();
-          item.buildInfo = info.buildInfo;
+          item.buildable = info.buildable;
           item.keepUpdate = info.keepUpdate;
           item.updated = info.updated;
           item.downloaded = info.downloaded;
