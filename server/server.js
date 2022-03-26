@@ -27,9 +27,9 @@ app.get('/getList', async (req, res) => {
 
 app.get('/getInfo/:repo', async (req, res) => {
     let repoName = req.params.repo;
-    let downloaded = await Utility.isRepoDownloaded(repoName, REPOS_PATH);
+    let downloaded = await github.isRepoDownloaded(repoName);
     let updated = await github.isLocalRepoUpdated(repoName);
-    let buildInfo = await github.getBuildingInfo(repoName);
+    let buildInfo = await github.isBuildable(repoName);
     let keepUpdate = (keepUpdateTmp[repoName] === undefined) ? false : keepUpdateTmp[repoName].state;
     res.send({ downloaded,updated, buildInfo, keepUpdate });
 })
@@ -37,7 +37,7 @@ app.get('/getInfo/:repo', async (req, res) => {
 app.get('/pull/:repo', async (req, res) => {
     let repoName = req.params.repo;
     console.log("Pulling repo: " + repoName);
-    if(Utility.isRepoDownloaded(repoName, REPOS_PATH)){
+    if(github.isRepoDownloaded(repoName)){
         if(await github.pullRepo(repoName))
             res.send({ success: true });
         else
@@ -48,7 +48,7 @@ app.get('/pull/:repo', async (req, res) => {
 
 app.get('/download/:repo', async (req, res) => {
     let repoName = req.params.repo;  
-    if(!Utility.isRepoDownloaded(repoName, REPOS_PATH)){
+    if(!github.isRepoDownloaded(repoName)){
         console.log("Downloading repo: " + repoName);
         if(await github.cloneRepo(repoName))
             res.send({ success: true });
@@ -56,6 +56,18 @@ app.get('/download/:repo', async (req, res) => {
             res.send({ success: false,message: "Error while downloading repo" });
     }
     else res.send({ success: false, message: "Repo already downloaded" });
+})
+
+app.get('/build/:repo', async (req, res) => {
+    let repoName = req.params.repo;
+    console.log("Building repo: " + repoName);
+    if(github.isRepoDownloaded(repoName)){
+        if(await github.buildRepo(repoName))
+            res.send({ success: true });
+        else
+            res.send({ success: false,message: "Error while building repo" });
+    }
+    else res.send({ success: false, message: "Repo not downloaded" });
 })
 
 app.get('/keepUpdate/:repo/:flag', async (req, res) => {
@@ -83,8 +95,7 @@ app.post('/github', async (req, res) => {
         await github.pullRepo(pushedInfo.repository.name);
         console.log("Search a build configuration...");
         if (await github.isBuildable(pushedInfo.repository.name)) {
-            let buildInfo = await github.getBuildingInfo(pushedInfo.repository.name);
-            Utility.buildRepo(buildInfo);
+            github.buildRepo(pushedInfo.repository.name);
         } else {
             console.log('Not buildable');
         }

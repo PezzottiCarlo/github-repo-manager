@@ -154,6 +154,30 @@ class Github {
         return hooks.find(hook => hook.name === 'web');
     }
 
+    isRepoDownloaded(repoName) {
+        let repos = fs.readdirSync(this.reposPath);
+        return repos.includes(repoName);
+    }
+
+    async buildRepo(repoName) {
+        if (fs.existsSync(`${this.reposPath}${repoName}`)){
+            shell.cd(repoPath);
+            let buildInfo = await this.getBuildingInfo(repoName);
+            for (let step of buildInfo.commands) {
+                if (step.includes('cd')) {
+                    let { stderr, stdout, code } = shell.cd(step.split("cd ")[1], { silent: true })
+                    if (code != 0)
+                        return false;
+                }
+                else {
+                    let { stderr, stdout, code } = shell.exec(step, { silent: true })
+                    if (code != 0)
+                        return false;
+                }
+            }
+        }
+        return false;
+    }
 }
 
 module.exports = Github;
