@@ -7,4 +7,4 @@ A simple manager of your repositories
 Allows you to automatically download and update your local repos
 
 ## TODO
-- add auto pull
+- distinguish downloaded repos from un-downloaded ones
