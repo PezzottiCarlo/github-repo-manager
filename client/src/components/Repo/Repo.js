@@ -1,9 +1,12 @@
 import "./Repo.css";
-import { useEffect,useState} from "react";
-import { MdOutlineBuildCircle,MdUpdate} from 'react-icons/md';
-import {RiDownloadCloudFill} from 'react-icons/ri';
-import {FaGithub} from 'react-icons/fa';
-import {AiOutlineCloudSync} from 'react-icons/ai';
+import { useEffect, useState } from "react";
+import { MdOutlineBuildCircle, MdUpdate } from 'react-icons/md';
+import { RiDownloadCloudFill } from 'react-icons/ri';
+import { FaGithub } from 'react-icons/fa';
+import { AiOutlineCloudSync } from 'react-icons/ai';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import Utility from "./Utility";
 
 const Repo = (props) => {
@@ -17,44 +20,70 @@ const Repo = (props) => {
 
 
     useEffect(() => {
-    },[])
+    }, [])
 
     const clickKeepUpdate = async (e) => {
-        let result = await Utility.keepUpdate(repoName,!repoKeepUpdate);
+        let result = await Utility.keepUpdate(repoName, !repoKeepUpdate);
         console.log(result);
-        if(result.statusCode === 0){
+        if (result.statusCode === 0) {
             setKeepUpdate(!repoKeepUpdate);
         }
     }
-    const clickDownload= async (e) => {
+    const clickDownload = async (e) => {
         let result = await Utility.download(repoName);
-        if(!result.success) alert(result.message);
-        else {setRepoDownloaded(true);setRepoUpdated(true);}
+        if (!result.success) alert(result.message);
+        else { setRepoDownloaded(true); setRepoUpdated(true); toast(`${repoName} downloaded`, { type: 'success' }); }
     }
     const clickPull = async (e) => {
         let result = await Utility.pull(repoName);
-        if(!result.success) alert(result.message);
-        else {setRepoUpdated(true);setRepoDownloaded(true);}
+        if (!result.success) alert(result.message);
+        else { setRepoUpdated(true); setRepoDownloaded(true); toast(`${repoName} pulled`, { type: 'success' }); }
     }
     const clickBuild = async (e) => {
-        let result = await Utility.build(repoName);
-        if(!result.success) alert(result.message);
+        let promise = new Promise(async (resolve, reject) => {
+            let result = await Utility.build(repoName);
+            if (!result.success) {
+                reject(result.message);
+            } else {
+                resolve();
+            }
+        })
+        toast.promise(promise,
+            {
+                pending: `${repoName} building`,
+                success: `${repoName} built`,
+                error: (error) => `${repoName} build failed: ${error}`,
+            })
     }
 
-    
+
 
     return (
-        <div className="repo">
-            <div className="repo-name">
-                <FaGithub />
-                <a className="repo-link" href={htmlUrl}>{repoName}</a>
-                {(!repoUpdated)?<MdUpdate className="repo-out-of-date"/>:null}
+        <div>
+            <div className="repo">
+                <div className="repo-name">
+                    <FaGithub />
+                    <a className="repo-link" href={htmlUrl}>{repoName}</a>
+                    {(!repoUpdated) ? <MdUpdate className="repo-out-of-date" /> : null}
+                </div>
+                <div className="repo-action">
+                    {(repoIsBuildable) ? <MdOutlineBuildCircle className="repo-icon build" onClick={clickBuild} /> : null}
+                    <AiOutlineCloudSync className={`repo-icon ${(repoKeepUpdate) ? "keepUpdate" : "inactive"}`} onClick={clickKeepUpdate} />
+                    {(repoDownloaded) ? <MdUpdate className="repo-icon update" onClick={clickPull} /> : <RiDownloadCloudFill className="repo-icon download" onClick={clickDownload} />}
+                </div>
             </div>
-            <div className="repo-action">
-                {(repoIsBuildable)?<MdOutlineBuildCircle className="repo-icon build" onClick={clickBuild}/>:null}
-                <AiOutlineCloudSync className={`repo-icon ${(repoKeepUpdate)?"keepUpdate":"inactive"}`} onClick={clickKeepUpdate}/>
-                {(repoDownloaded)?<MdUpdate className="repo-icon update" onClick={clickPull}/>:<RiDownloadCloudFill className="repo-icon download" onClick={clickDownload}/>}   
-            </div>
+            <ToastContainer
+                theme="dark"
+                position="top-right"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
         </div>
     );
 }
