@@ -166,13 +166,19 @@ class Github {
             for (let step of buildInfo.commands) {
                 if (step.includes('cd')) {
                     let { stderr, stdout, code } = shell.cd(step.split("cd ")[1], { silent: true })
-                    if (code != 0)
+                    if (code != 0){
+                        console.log(step);
+                        console.log(stderr);
                         return false;
+                    }
                 }
                 else {
                     let { stderr, stdout, code } = shell.exec(step, { silent: true })
-                    if (code != 0)
+                    if (code != 0){
+                        console.log(step);
+                        console.log(stderr);
                         return false;
+                    }
                 }
             }
         }
