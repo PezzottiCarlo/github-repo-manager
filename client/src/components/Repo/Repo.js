@@ -23,21 +23,53 @@ const Repo = (props) => {
     }, [])
 
     const clickKeepUpdate = async (e) => {
-        let result = await Utility.keepUpdate(repoName, !repoKeepUpdate);
-        console.log(result);
-        if (result.statusCode === 0) {
-            setKeepUpdate(!repoKeepUpdate);
-        }
+        let promise = new Promise(async (resolve, reject) => {
+            let result = await Utility.keepUpdate(repoName, !repoKeepUpdate);
+            if (!result.success) {
+                reject(result.message);
+            } else {
+                setKeepUpdate(!repoKeepUpdate);
+                resolve();
+            }
+        })
+        toast.promise(promise,
+            {
+                pending: `set ${repoName} sync to ${repoKeepUpdate ? "on" : "off"}...`,
+                success: `successfully`,
+                error: (error) => `failed: ${error}`,
+            })
     }
     const clickDownload = async (e) => {
-        let result = await Utility.download(repoName);
-        if (!result.success) alert(result.message);
-        else { setRepoDownloaded(true); setRepoUpdated(true); toast(`${repoName} downloaded`, { type: 'success' }); }
+        let promise = new Promise(async (resolve, reject) => {
+            let result = await Utility.download(repoName);
+            if (!result.success) {
+                reject(result.message);
+            } else {
+                resolve();
+            }
+        })
+        toast.promise(promise,
+            {
+                pending: `${repoName} is downloading...`,
+                success: `${repoName} is downloaded`,
+                error: (error) => `${repoName} download failed: ${error}`,
+            })
     }
     const clickPull = async (e) => {
-        let result = await Utility.pull(repoName);
-        if (!result.success) alert(result.message);
-        else { setRepoUpdated(true); setRepoDownloaded(true); toast(`${repoName} pulled`, { type: 'success' }); }
+        let promise = new Promise(async (resolve, reject) => {
+            let result = await Utility.pull(repoName);
+            if (!result.success) {
+                reject(result.message);
+            } else {
+                resolve();
+            }
+        })
+        toast.promise(promise,
+            {
+                pending: `${repoName} is pulling`,
+                success: `${repoName} is pulled`,
+                error: (error) => `${repoName} is failed to pull: ${error}`,
+            })
     }
     const clickBuild = async (e) => {
         let promise = new Promise(async (resolve, reject) => {

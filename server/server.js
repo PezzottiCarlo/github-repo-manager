@@ -85,7 +85,7 @@ app.get('/keepUpdate/:repo/:flag', async (req, res) => {
         keepUpdateTmp[req.params.repo].state = kUFlag;
     }
     Utility.setKeepUpdate(keepUpdateTmp);
-    res.json({ statusCode: 0, status: keepUpdateTmp[req.params.repo].state });
+    res.json({ success: true });
 })
 
 app.post('/github', async (req, res) => {
