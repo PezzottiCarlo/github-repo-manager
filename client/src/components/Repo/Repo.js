@@ -45,6 +45,8 @@ const Repo = (props) => {
             if (!result.success) {
                 reject(result.message);
             } else {
+                setRepoDownloaded(true);
+                setRepoUpdated(true)
                 resolve();
             }
         })
@@ -61,6 +63,7 @@ const Repo = (props) => {
             if (!result.success) {
                 reject(result.message);
             } else {
+                setRepoUpdated(true);
                 resolve();
             }
         })
