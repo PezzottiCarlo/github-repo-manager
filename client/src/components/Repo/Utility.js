@@ -6,6 +6,12 @@ class Utility{
         let data = await res.json();
         return data;
     } 
+
+    static pull = async (repoName) => {
+        let res = await fetch(`pull/${repoName}`);
+        let data = await res.json();
+        return data;
+    }
 }
 
 export default Utility;

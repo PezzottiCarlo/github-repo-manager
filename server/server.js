@@ -1,7 +1,7 @@
 const Github = require('./utility/github.js');
 const Utility = require('./utility/utility.js');
 const config = require('./config/config.json');
-let auto = Utility.getKeepUpdate();
+let keepUpdateTmp = Utility.getKeepUpdate();
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -29,20 +29,53 @@ app.get('/getInfo/:repo', async (req, res) => {
     let repoName = req.params.repo;
     let updated = await github.isLocalRepoUpdated(repoName);
     let buildInfo = await github.getBuildingInfo(repoName);
-    let keepUpdate = auto[repoName] || false;
-    res.send({ updated, buildInfo,keepUpdate });
+    let keepUpdate = (keepUpdateTmp[repoName] === undefined) ? false : keepUpdateTmp[repoName].state;
+    res.send({ updated, buildInfo, keepUpdate });
+})
+
+app.get('/pull/:repo', async (req, res) => {
+    let repoName = req.params.repo;
+    console.log("Pulling repo: " + repoName);
+    if(Utility.isRepoDownloaded(repoName, REPOS_PATH)){
+        if(await github.pullRepo(repoName))
+            res.send({ success: true });
+        else
+            res.send({ success: false,message: "Error while pulling repo" });
+    }
+    else res.send({ success: false, message: "Repo not downloaded" });
 })
 
 app.get('/keepUpdate/:repo/:flag', async (req, res) => {
-    auto[req.params.repo] = req.params.flag==='true';
-    Utility.setKeepUpdate(auto);
-    res.json({ statusCode: 0,status:auto[req.params.repo]});
+    let hook;
+    let kUFlag = req.params.flag === 'true';
+    if (!keepUpdateTmp[req.params.repo]) {
+        hook = await github.setWebhook(req.params.repo, config.payloadUrl, kUFlag);
+        keepUpdateTmp[req.params.repo] = {};
+        let tmp = {
+            state: kUFlag,
+            hookId: hook.id
+        }
+        keepUpdateTmp[req.params.repo] = tmp;
+    }else{
+        keepUpdateTmp[req.params.repo].state = kUFlag;
+    }
+    Utility.setKeepUpdate(keepUpdateTmp);
+    res.json({ statusCode: 0, status: keepUpdateTmp[req.params.repo].state });
 })
 
 app.post('/github', async (req, res) => {
     let pushedInfo = req.body
-    let buildInfo = await github.getBuildingInfo(pushedInfo.repository.name);
-    console.log(pushedInfo.repository.name)
-    Utility.buildRepo(buildInfo);
+    if (keepUpdateTmp[pushedInfo.repository.name] && keepUpdateTmp[pushedInfo.repository.name].state) {
+        console.log("Updating...", pushedInfo.repository.name);
+        await github.pullRepo(pushedInfo.repository.name);
+        console.log("Search a build configuration...");
+        if (await github.isBuildable(pushedInfo.repository.name)) {
+            let buildInfo = await github.getBuildingInfo(pushedInfo.repository.name);
+            Utility.buildRepo(buildInfo);
+        } else {
+            console.log('Not buildable');
+        }
+        console.log("Updated");
+    }
     res.sendStatus(200);
 })

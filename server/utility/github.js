@@ -65,6 +65,18 @@ class Github {
         return false;
     }
 
+    async isBuildable(repoName) {
+        const response = await fetch(`${API_BASE_LINK}/repos/${this.username}/${repoName}/contents/build.json`, {
+            headers: {
+                'Authorization': `token ${this.token}`,
+                'User-Agent': 'node.js',
+                'Content-Type': 'application/json'
+            }
+        });
+        const buildinfo = await response.json();
+        return buildinfo.download_url !== undefined;
+    }
+
     async getBuildingInfo(repoName) {
         const response = await fetch(`${API_BASE_LINK}/repos/${this.username}/${repoName}/contents/build.json`, {
             headers: {
@@ -87,6 +99,61 @@ class Github {
             return await res.json();
         }
     }
+
+    async updateWebhook(repoName,id, payloadUrl, state) {
+        const response = await fetch(`${API_BASE_LINK}/repos/${this.username}/${repoName}/hooks/${id}/config`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `token ${this.token}`,
+                'User-Agent': 'node.js',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: 'web',
+                active: state,
+                events: ['push'],
+                config: {
+                    url: payloadUrl,
+                    content_type: 'json'
+                }
+            })
+        });
+        return await response.json();
+    }
+
+    async setWebhook(repoName, payloadUrl, state) {
+        const response = await fetch(`${API_BASE_LINK}/repos/${this.username}/${repoName}/hooks`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `token ${this.token}`,
+                'User-Agent': 'node.js',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: 'web',
+                active: state,
+                events: ['push'],
+                config: {
+                    url: payloadUrl,
+                    content_type: 'json'
+                }
+            })
+        });
+        return await response.json();
+    }
+
+    async getWebhook(repoName) {
+        const response = await fetch(`${API_BASE_LINK}/repos/${this.username}/${repoName}/hooks`, {
+            headers: {
+                'Authorization': `token ${this.token}`,
+                'User-Agent': 'node.js',
+                'Content-Type': 'application/json'
+            }
+        });
+        const hooks = await response.json();
+        return hooks.find(hook => hook.name === 'web');
+    }
+
 }
 
 module.exports = Github;
