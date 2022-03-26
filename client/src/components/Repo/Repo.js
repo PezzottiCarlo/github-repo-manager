@@ -20,24 +20,25 @@ const Repo = (props) => {
     },[])
 
     const clickKeepUpdate = async (e) => {
-        let result = await Utility.keepUpdate(props.repo.name,!repoKeepUpdate);
+        let result = await Utility.keepUpdate(repoName,!repoKeepUpdate);
         console.log(result);
         if(result.statusCode === 0){
             setKeepUpdate(!repoKeepUpdate);
         }
     }
     const clickDownload= async (e) => {
-        let result = await Utility.download(props.repo.name);
+        let result = await Utility.download(repoName);
         if(!result.success) alert(result.message);
         else {setRepoDownloaded(true);setRepoUpdated(true);}
     }
     const clickPull = async (e) => {
-        let result = await Utility.pull(props.repo.name);
+        let result = await Utility.pull(repoName);
         if(!result.success) alert(result.message);
         else {setRepoUpdated(true);setRepoDownloaded(true);}
     }
     const clickBuild = async (e) => {
-        
+        let result = await Utility.build(repoName);
+        if(!result.success) alert(result.message);
     }
 
     

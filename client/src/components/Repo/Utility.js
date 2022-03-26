@@ -18,6 +18,12 @@ class Utility{
         let data = await res.json();
         return data;
     }
+
+    static build = async (repoName) => {
+        let res = await fetch(`build/${repoName}`);
+        let data = await res.json();
+        return data;
+    }
 }
 
 export default Utility;

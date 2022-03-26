@@ -161,7 +161,7 @@ class Github {
 
     async buildRepo(repoName) {
         if (fs.existsSync(`${this.reposPath}${repoName}`)){
-            shell.cd(repoPath);
+            shell.cd(`${this.reposPath}${repoName}`);
             let buildInfo = await this.getBuildingInfo(repoName);
             for (let step of buildInfo.commands) {
                 if (step.includes('cd')) {
