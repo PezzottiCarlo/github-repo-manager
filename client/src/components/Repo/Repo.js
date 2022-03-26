@@ -34,7 +34,7 @@ const Repo = (props) => {
         })
         toast.promise(promise,
             {
-                pending: `set ${repoName} sync to ${repoKeepUpdate ? "on" : "off"}...`,
+                pending: `${repoName} ${repoKeepUpdate ? "disabling" : "enabling"} sync`,
                 success: `successfully`,
                 error: (error) => `failed: ${error}`,
             })
