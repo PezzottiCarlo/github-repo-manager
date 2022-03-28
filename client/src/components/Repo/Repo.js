@@ -18,10 +18,6 @@ const Repo = (props) => {
     const [repoDownloaded, setRepoDownloaded] = useState(props.repo.downloaded);
     const [repoIsBuildable, setBuildable] = useState(props.repo.buildable);
 
-
-    useEffect(() => {
-    }, [])
-
     const clickKeepUpdate = async (e) => {
         let promise = new Promise(async (resolve, reject) => {
             let result = await Utility.keepUpdate(repoName, !repoKeepUpdate);

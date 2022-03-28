@@ -25,6 +25,11 @@ app.get('/getList', async (req, res) => {
     res.send(repos);
 })
 
+app.get('/isBuildable/:repo', async (req, res) => {
+    let repoName = req.params.repo;
+    res.send(await github.isBuildable(repoName));
+})
+
 app.get('/getInfo/:repo', async (req, res) => {
     let repoName = req.params.repo;
     let downloaded = await github.isRepoDownloaded(repoName);
