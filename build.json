@@ -1,4 +1,4 @@
 {
     "commands":["cd server","npm i","rrm -rf build 2>&1","cd ../client","npm i","npm run build","mv build/ ../"],
-    "recommended startup":["pm2 start server.js"]
+    "startup":["pm2 start server.js --watch"]
 }
