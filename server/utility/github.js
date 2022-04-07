@@ -25,8 +25,24 @@ class Github {
                 'Content-Type': 'application/json'
             }
         });
-        const repos = await response.json();
+        let repos = await response.json();
+        let forked = await this.getForkList();
+        for(let fork of forked){
+            repos.items.push(fork);
+        }
         return repos;
+    }
+
+    async getForkList(){
+        const response = await fetch(`${API_BASE_LINK}/users/${this.username}/repos`, {
+            headers: {
+                'Authorization': `token ${this.token}`,
+                'User-Agent': 'node.js',
+                'Content-Type': 'application/json'
+            }
+        });
+        const all = await response.json();
+        return all.filter(repo => repo.fork);
     }
 
     async cloneRepo(repoName) {
