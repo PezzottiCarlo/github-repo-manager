@@ -38,7 +38,7 @@ const App = () => {
   }, [])
 
   return (
-    <div className={(reposStatus === 1) ? "App" : "App-center"}>
+    <div className="App-center">
       <LoadingBar
         color='#0892d0'
         progress={progress}
