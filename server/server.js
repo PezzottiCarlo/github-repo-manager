@@ -36,29 +36,29 @@ app.get('/getInfo/:repo', async (req, res) => {
     let updated = await github.isLocalRepoUpdated(repoName);
     let buildable = await github.isBuildable(repoName);
     let keepUpdate = (keepUpdateTmp[repoName] === undefined) ? false : keepUpdateTmp[repoName].state;
-    res.send({ downloaded,updated, buildable, keepUpdate });
+    res.send({ downloaded, updated, buildable, keepUpdate });
 })
 
 app.get('/pull/:repo', async (req, res) => {
     let repoName = req.params.repo;
     console.log("Pulling repo: " + repoName);
-    if(github.isRepoDownloaded(repoName)){
-        if(await github.pullRepo(repoName))
+    if (github.isRepoDownloaded(repoName)) {
+        if (await github.pullRepo(repoName))
             res.send({ success: true });
         else
-            res.send({ success: false,message: "Error while pulling repo" });
+            res.send({ success: false, message: "Error while pulling repo" });
     }
     else res.send({ success: false, message: "Repo not downloaded" });
 })
 
 app.get('/download/:repo', async (req, res) => {
-    let repoName = req.params.repo;  
-    if(!github.isRepoDownloaded(repoName)){
+    let repoName = req.params.repo;
+    if (!github.isRepoDownloaded(repoName)) {
         console.log("Downloading repo: " + repoName);
-        if(await github.cloneRepo(repoName))
+        if (await github.cloneRepo(repoName))
             res.send({ success: true });
         else
-            res.send({ success: false,message: "Error while downloading repo" });
+            res.send({ success: false, message: "Error while downloading repo" });
     }
     else res.send({ success: false, message: "Repo already downloaded" });
 })
@@ -66,11 +66,11 @@ app.get('/download/:repo', async (req, res) => {
 app.get('/build/:repo', async (req, res) => {
     let repoName = req.params.repo;
     console.log("Building repo: " + repoName);
-    if(github.isRepoDownloaded(repoName)){
-        if(await github.buildRepo(repoName))
+    if (github.isRepoDownloaded(repoName)) {
+        if (await github.buildRepo(repoName))
             res.send({ success: true });
         else
-            res.send({ success: false,message: "Error while building repo" });
+            res.send({ success: false, message: "Error while building repo" });
     }
     else res.send({ success: false, message: "Repo not downloaded" });
 })
@@ -86,25 +86,31 @@ app.get('/keepUpdate/:repo/:flag', async (req, res) => {
             hookId: hook.id
         }
         keepUpdateTmp[req.params.repo] = tmp;
-    }else{
+    } else {
         keepUpdateTmp[req.params.repo].state = kUFlag;
     }
     Utility.setKeepUpdate(keepUpdateTmp);
     res.json({ success: true });
 })
 
+
+//TO DO: check whether the signature on the request is correct
 app.post('/github', async (req, res) => {
     let pushedInfo = req.body
-    if (keepUpdateTmp[pushedInfo.repository.name] && keepUpdateTmp[pushedInfo.repository.name].state) {
-        console.log("Updating...", pushedInfo.repository.name);
-        await github.pullRepo(pushedInfo.repository.name);
-        console.log("Search a build configuration...");
-        if (await github.isBuildable(pushedInfo.repository.name)) {
-            await github.buildRepo(pushedInfo.repository.name);
-        } else {
-            console.log('Not buildable');
+    if (pushedInfo && pushedInfo.repository) {
+        if (keepUpdateTmp[pushedInfo.repository.name] && keepUpdateTmp[pushedInfo.repository.name].state) {
+            console.log("Updating...", pushedInfo.repository.name);
+            await github.pullRepo(pushedInfo.repository.name);
+            console.log("Search a build configuration...");
+            if (await github.isBuildable(pushedInfo.repository.name)) {
+                await github.buildRepo(pushedInfo.repository.name);
+            } else {
+                console.log('Not buildable');
+            }
+            console.log("Updated");
         }
-        console.log("Updated");
+    }else{
+        console.log("No repository info");
     }
     res.sendStatus(200);
 })
