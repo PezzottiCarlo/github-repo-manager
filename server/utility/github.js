@@ -27,13 +27,13 @@ class Github {
         });
         let repos = await response.json();
         let forked = await this.getForkList();
-        for(let fork of forked){
+        for (let fork of forked) {
             repos.items.push(fork);
         }
         return repos;
     }
 
-    async getForkList(){
+    async getForkList() {
         const response = await fetch(`${API_BASE_LINK}/users/${this.username}/repos`, {
             headers: {
                 'Authorization': `token ${this.token}`,
@@ -116,28 +116,7 @@ class Github {
         }
     }
 
-    async updateWebhook(repoName,id, payloadUrl, state) {
-        const response = await fetch(`${API_BASE_LINK}/repos/${this.username}/${repoName}/hooks/${id}/config`, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': `token ${this.token}`,
-                'User-Agent': 'node.js',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: 'web',
-                active: state,
-                events: ['push'],
-                config: {
-                    url: payloadUrl,
-                    content_type: 'json'
-                }
-            })
-        });
-        return await response.json();
-    }
-
-    async setWebhook(repoName, payloadUrl, state) {
+    async setWebhook(repoName, payloadUrl, state, token) {
         const response = await fetch(`${API_BASE_LINK}/repos/${this.username}/${repoName}/hooks`, {
             method: 'POST',
             headers: {
@@ -151,7 +130,8 @@ class Github {
                 events: ['push'],
                 config: {
                     url: payloadUrl,
-                    content_type: 'json'
+                    content_type: 'json',
+                    secret: token
                 }
             })
         });
@@ -176,20 +156,20 @@ class Github {
     }
 
     async buildRepo(repoName) {
-        if (fs.existsSync(`${this.reposPath}${repoName}`)){
+        if (fs.existsSync(`${this.reposPath}${repoName}`)) {
             let current = shell.pwd();
             shell.cd(`${this.reposPath}${repoName}`);
             let buildInfo = await this.getBuildingInfo(repoName);
             for (let step of buildInfo.commands) {
                 if (step.includes('cd')) {
                     let { stderr, stdout, code } = shell.cd(step.split("cd ")[1], { silent: true })
-                    if (code != 0){
+                    if (code != 0) {
                         return false;
                     }
                 }
                 else {
                     let { stderr, stdout, code } = shell.exec(step, { silent: true })
-                    if (code != 0){
+                    if (code != 0) {
                         return false;
                     }
                 }

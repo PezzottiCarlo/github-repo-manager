@@ -1,16 +1,12 @@
 const Github = require('./utility/github.js');
 const Utility = require('./utility/utility.js');
-const config = require('./config/config.json');
+const config = require('./config/config.js');
 let keepUpdateTmp = Utility.getKeepUpdate();
 const express = require('express');
 const app = express();
 const cors = require('cors');
 
-const HOME_DIR = require('os').homedir();
-const REPOS_PATH = `${HOME_DIR}/Documents/Projects/`;
-let username = config.username;
-
-const github = new Github(config.username, config.token, REPOS_PATH);
+const github = new Github(config.username, config.token, config.repos_path);
 
 app.use(express.json())
 app.use(cors());
@@ -79,13 +75,19 @@ app.get('/keepUpdate/:repo/:flag', async (req, res) => {
     let hook;
     let kUFlag = req.params.flag === 'true';
     if (!keepUpdateTmp[req.params.repo]) {
-        hook = await github.setWebhook(req.params.repo, config.payloadUrl, kUFlag);
-        keepUpdateTmp[req.params.repo] = {};
-        let tmp = {
-            state: kUFlag,
-            hookId: hook.id
+        hook = await github.setWebhook(req.params.repo, config.payloadUrl, kUFlag, config.token);
+        if (hook.errors) {
+            console.log(hook.errors);
+            res.json({ success: false, message: "Error while setting webhook" });
+            return
+        } else {
+            keepUpdateTmp[req.params.repo] = {};
+            let tmp = {
+                state: kUFlag,
+                hookId: hook.id
+            }
+            keepUpdateTmp[req.params.repo] = tmp;
         }
-        keepUpdateTmp[req.params.repo] = tmp;
     } else {
         keepUpdateTmp[req.params.repo].state = kUFlag;
     }
@@ -109,8 +111,9 @@ app.post('/github', async (req, res) => {
             }
             console.log("Updated");
         }
-    }else{
+    } else {
         console.log("No repository info");
     }
     res.sendStatus(200);
 })
+
