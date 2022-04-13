@@ -1,10 +1,14 @@
+const express = require('express');
+const cors = require('cors');
+
 const Github = require('./utility/github.js');
 const Utility = require('./utility/utility.js');
 const config = require('./config/config.js');
 let keepUpdateTmp = Utility.getKeepUpdate();
-const express = require('express');
+
+
 const app = express();
-const cors = require('cors');
+
 
 const github = new Github(config.username, config.token, config.repos_path);
 
@@ -98,22 +102,29 @@ app.get('/keepUpdate/:repo/:flag', async (req, res) => {
 
 //TO DO: check whether the signature on the request is correct
 app.post('/github', async (req, res) => {
-    let pushedInfo = req.body
-    if (pushedInfo && pushedInfo.repository) {
-        if (keepUpdateTmp[pushedInfo.repository.name] && keepUpdateTmp[pushedInfo.repository.name].state) {
-            console.log("Updating...", pushedInfo.repository.name);
-            await github.pullRepo(pushedInfo.repository.name);
-            console.log("Search a build configuration...");
-            if (await github.isBuildable(pushedInfo.repository.name)) {
-                await github.buildRepo(pushedInfo.repository.name);
-            } else {
-                console.log('Not buildable');
+    const hmac = req.headers['x-hub-signature-256'];
+    const verified = github.verifySignature(JSON.stringify(req.body), hmac);
+    if (verified) {
+        let pushedInfo = req.body
+        if (pushedInfo && pushedInfo.repository) {
+            if (keepUpdateTmp[pushedInfo.repository.name] && keepUpdateTmp[pushedInfo.repository.name].state) {
+                console.log("Updating...", pushedInfo.repository.name);
+                await github.pullRepo(pushedInfo.repository.name);
+                console.log("Search a build configuration...");
+                if (await github.isBuildable(pushedInfo.repository.name)) {
+                    await github.buildRepo(pushedInfo.repository.name);
+                } else {
+                    console.log('Not buildable');
+                }
+                console.log("Updated");
             }
-            console.log("Updated");
+        } else {
+            console.log("No repository info");
         }
+        res.sendStatus(200);
     } else {
-        console.log("No repository info");
+        console.log("Signature not verified");
+        res.sendStatus(403);
     }
-    res.sendStatus(200);
 })
 

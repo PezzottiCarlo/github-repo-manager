@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 const shell = require('shelljs')
 const fs = require('fs');
+const crypto = require('crypto');
 
 
 const API_BASE_LINK = 'https://api.github.com';
@@ -178,6 +179,12 @@ class Github {
             return true;
         }
         return false;
+    }
+
+    verifySignature(payload, hmac) {
+        const message = payload.toString();
+        const genHash = "sha256="+crypto.createHmac("sha256", this.token).update(message).digest("hex");
+        return genHash === hmac;
     }
 }
 
