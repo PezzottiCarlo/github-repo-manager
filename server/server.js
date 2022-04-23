@@ -115,6 +115,7 @@ app.post('/github', async (req, res) => {
                 await github.pullRepo(pushedInfo.repository.name);
                 console.log("Search a build configuration...");
                 if (await github.isBuildable(pushedInfo.repository.name)) {
+                    console.log("Building...");
                     if (await github.buildRepo(pushedInfo.repository.name))
                         console.log("Build successfull");
                     else {

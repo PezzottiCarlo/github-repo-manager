@@ -163,6 +163,7 @@ class Github {
             shell.cd(`${this.reposPath}${repoName}`);
             let buildInfo = await this.getBuildingInfo(repoName);
             for (let step of buildInfo.commands) {
+                console.log(`Executing ${step.command}`);
                 if (step.includes('cd')) {
                     let { stderr, stdout, code } = shell.cd(step.split("cd ")[1], { silent: true })
                     if (code != 0) {
