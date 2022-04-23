@@ -6,6 +6,7 @@ const crypto = require('crypto');
 
 const API_BASE_LINK = 'https://api.github.com';
 const GITHUB_BASE_LINK = 'https://github.com';
+const GITHUB_BASE_LINK_TOKEN = (token) => `https://${token}@github.com`;
 
 
 class Github {
@@ -48,7 +49,7 @@ class Github {
 
     async cloneRepo(repoName) {
         let current = shell.pwd();
-        let link = `${GITHUB_BASE_LINK}/${this.username}/${repoName}`;
+        let link = `${GITHUB_BASE_LINK_TOKEN(this.token)}/${this.username}/${repoName}`;
         shell.cd(this.reposPath);
         const { stdout, stderr, code } = shell.exec(`git clone ${link}`, { silent: true })
         shell.cd(current);

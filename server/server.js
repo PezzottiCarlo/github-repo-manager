@@ -17,6 +17,7 @@ app.use(cors());
 app.use("/", express.static("../build"))
 
 app.listen(config.port, async () => {
+    github.cloneRepo("wabba-screensaver")
     console.log(`Server running on port ${config.port}`);
 })
 
