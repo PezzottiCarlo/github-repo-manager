@@ -182,6 +182,7 @@ class Github {
                 }
             }
             shell.cd(current);
+            console.log(`Build of ${repoName} successful`);
             return true;
         }
         return false;
