@@ -67,7 +67,7 @@ app.get('/build/:repo', async (req, res) => {
     let repoName = req.params.repo;
     console.log("Building repo: " + repoName);
     if (github.isRepoDownloaded(repoName)) {
-        if (await github.isBuildable(pushedInfo.repository.name)) {
+        if (await github.isBuildable(repoName)) {
             if (await github.buildRepo(repoName))
                 res.send({ success: true });
             else

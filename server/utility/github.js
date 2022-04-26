@@ -29,8 +29,10 @@ class Github {
         });
         let repos = await response.json();
         let forked = await this.getForkList();
-        for (let fork of forked) {
-            repos.items.push(fork);
+        if (forked.length > 0) {
+            for (let fork of forked) {
+                repos.items.push(fork);
+            }
         }
         return repos;
     }
@@ -44,7 +46,9 @@ class Github {
             }
         });
         const all = await response.json();
-        return all.filter(repo => repo.fork);
+        if(all.length > 0) 
+            return all.filter(repo => repo.fork);
+        return [];
     }
 
     async cloneRepo(repoName) {
@@ -185,7 +189,7 @@ class Github {
 
     verifySignature(payload, hmac) {
         const message = payload.toString();
-        const genHash = "sha256="+crypto.createHmac("sha256", this.token).update(message).digest("hex");
+        const genHash = "sha256=" + crypto.createHmac("sha256", this.token).update(message).digest("hex");
         return genHash === hmac;
     }
 }
