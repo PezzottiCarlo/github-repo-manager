@@ -1,9 +1,6 @@
 import "./Repo.css";
 import { useEffect, useState } from "react";
-import { MdOutlineBuildCircle, MdUpdate } from 'react-icons/md';
-import { RiDownloadCloudFill } from 'react-icons/ri';
-import { FaGithub } from 'react-icons/fa';
-import { AiOutlineCloudSync } from 'react-icons/ai';
+import { FiTool, FiGithub,FiDownload,FiDownloadCloud,FiRefreshCcw} from "react-icons/fi";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -94,14 +91,14 @@ const Repo = ({repo}) => {
         <div>
             <div className="repo">
                 <div className="repo-name">
-                    <FaGithub />
+                    <FiGithub />
                     <a className="repo-link" href={htmlUrl}>{repoName}</a>
-                    {(!repoUpdated) ? <MdUpdate className="repo-out-of-date" /> : null}
+                    {(!repoUpdated) ? <FiDownloadCloud className="repo-out-of-date" /> : null}
                 </div>
                 <div className="repo-action">
-                    {(repoIsBuildable) ? <MdOutlineBuildCircle className="repo-icon build" onClick={clickBuild} /> : null}
-                    <AiOutlineCloudSync className={`repo-icon ${(repoKeepUpdate) ? "keepUpdate" : "inactive"}`} onClick={clickKeepUpdate} />
-                    {(repoDownloaded) ? <MdUpdate className="repo-icon update" onClick={clickPull} /> : <RiDownloadCloudFill className="repo-icon download" onClick={clickDownload} />}
+                    {(repoIsBuildable) ? <FiTool className="repo-icon build" onClick={clickBuild} /> : null}
+                    <FiRefreshCcw className={`repo-icon ${(repoKeepUpdate) ? "keepUpdate" : "inactive"}`} onClick={clickKeepUpdate} />
+                    {(repoDownloaded) ? <FiDownloadCloud className="repo-icon update" onClick={clickPull} /> : <FiDownload className="repo-icon download" onClick={clickDownload} />}
                 </div>
             </div>
             <ToastContainer

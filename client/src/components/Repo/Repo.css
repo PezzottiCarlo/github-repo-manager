@@ -3,7 +3,7 @@
     height: 5rem;
     background-color: rgba(255,255,255,0.05);
     color: #cdd9e5;
-    border-radius: 0.1rem;
+    border-radius: 0.5rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -18,13 +18,14 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    font-size: 1.5rem;
+    font-size: 1.1rem;
 }
 
 .repo-link{
     font-weight: bold;
     text-decoration: none;
     margin-left: 1rem;
+    margin-right: 1rem;
 }
 
 .repo-action{
@@ -46,27 +47,27 @@
     margin-left: 1rem;
 }
 .repo-icon:hover{
-    padding: 1rem;
+    background-color: hsla(0,0%,100%,0.1);
 }
 
 .inactive{
-    background-color: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.1);
 }
 
 .download{
-    background-color: #00adb5;
+    color: #54f6ff;
 }
 
 .keepUpdate{
-    background-color: #00b561;
+    color: #7bffc1;
 }
 
 .update{
-    background-color: #005eb5;
+    color: #3496f2;
 }
 
 .build{
-    background-color: #8c49b8;
+    color: #a35fd0;
 }
 .repo-out-of-date{
     font-size: 1rem;
