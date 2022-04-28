@@ -9,14 +9,14 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import Utility from "./Utility";
 
-const Repo = (props) => {
+const Repo = ({repo}) => {
 
-    const [repoKeepUpdate, setKeepUpdate] = useState(props.repo.keepUpdate);
-    const [htmlUrl, setHtmlUrl] = useState(props.repo.htmlUrl);
-    const [repoName, setRepoName] = useState(props.repo.name);
-    const [repoUpdated, setRepoUpdated] = useState(props.repo.updated);
-    const [repoDownloaded, setRepoDownloaded] = useState(props.repo.downloaded);
-    const [repoIsBuildable, setBuildable] = useState(props.repo.buildable);
+    const [repoKeepUpdate, setKeepUpdate] = useState(repo.keepUpdate);
+    const [htmlUrl, setHtmlUrl] = useState(repo.htmlUrl);
+    const [repoName, setRepoName] = useState(repo.name);
+    const [repoUpdated, setRepoUpdated] = useState(repo.updated);
+    const [repoDownloaded, setRepoDownloaded] = useState(repo.downloaded);
+    const [repoIsBuildable, setBuildable] = useState(repo.buildable);
 
     const clickKeepUpdate = async (e) => {
         let promise = new Promise(async (resolve, reject) => {

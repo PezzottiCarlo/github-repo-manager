@@ -10,6 +10,7 @@ const App = () => {
   const [repos, setRepos] = useState([]);
   const [progress, setProgress] = useState(0)
   const [progressMessage, setProgressMessage] = useState("")
+  const [filter, setFilter] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,17 +38,40 @@ const App = () => {
     fetchData();
   }, [])
 
+  const filerChange = (event) => {
+    setFilter(event.target.value);
+  }
+
+  const filteredData = () => {
+    if (filter === '') {
+      return repos.items;
+    }
+    return repos.items.filter(repo => {
+      console.log(repo)
+      return repo.name.toLowerCase().includes(filter.toLowerCase())
+    })
+  }
+
   return (
-    <div className="App-center">
+    <div className="App">
       <LoadingBar
         color='#0892d0'
         progress={progress}
       />
       {(reposStatus === 1) ? (
-        <div className="repo-list">
-          {repos.items.map(repo => (
-            <Repo className="repo" key={repo.id} repo={repo} />
-          ))}
+        <div className="repo-manage">
+          <div className="repo-bar">
+            <div className="repo-bar-search">
+              <input value={filter} onChange={filerChange} type="text" placeholder="Search" />
+            </div>
+          </div>
+          <div className="repo-list">
+            {filteredData().map(repo => (
+              <div className="repo-item">
+                <Repo key={repo.id} repo={repo} />
+              </div>
+            ))}
+          </div>
         </div>) : (
         (reposStatus === 2) ? <h1>Error</h1> :
           <div className='loading'>
