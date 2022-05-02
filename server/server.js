@@ -33,10 +33,8 @@ app.get('/isBuildable/:repo', async (req, res) => {
 app.get('/getInfo/:repo', async (req, res) => {
     let repoName = req.params.repo;
     let downloaded = await github.isRepoDownloaded(repoName);
-    let updated = await github.isLocalRepoUpdated(repoName);
-    let buildable = await github.isBuildable(repoName);
     let keepUpdate = (keepUpdateTmp[repoName] === undefined) ? false : keepUpdateTmp[repoName].state;
-    res.send({ downloaded, updated, buildable, keepUpdate });
+    res.send({ downloaded, keepUpdate });
 })
 
 app.get('/pull/:repo', async (req, res) => {
@@ -56,11 +54,11 @@ app.get('/download/:repo', async (req, res) => {
     if (!github.isRepoDownloaded(repoName)) {
         console.log("Downloading repo: " + repoName);
         if (await github.cloneRepo(repoName))
-            res.send({ success: true });
+            return res.send({ success: true });
         else
-            res.send({ success: false, message: "Error while downloading repo" });
+            return res.send({ success: false, message: "Error while downloading repo" });
     }
-    else res.send({ success: false, message: "Repo already downloaded" });
+    else return res.send({ success: false, message: "Repo already downloaded" });
 })
 
 app.get('/build/:repo', async (req, res) => {
@@ -69,12 +67,13 @@ app.get('/build/:repo', async (req, res) => {
     if (github.isRepoDownloaded(repoName)) {
         if (await github.isBuildable(repoName)) {
             if (await github.buildRepo(repoName))
-                res.send({ success: true });
+                return res.send({ success: true });
             else
-                res.send({ success: false, message: "Error while building repo" });
+                return res.send({ success: false, message: "Error while building repo" });
         }
+        return res.send({ success: false, message: "Repo not buildable" });
     }
-    else res.send({ success: false, message: "Repo not downloaded" });
+    else return res.send({ success: false, message: "Repo not downloaded" });
 })
 
 app.get('/keepUpdate/:repo/:flag', async (req, res) => {
