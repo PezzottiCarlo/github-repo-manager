@@ -76,3 +76,15 @@
   font-size: 1rem;
   color:rgba(255,255,255,0.3)
 }
+
+@media only screen and (max-width: 600px) {
+  .repo-container {
+    min-width: 100%;
+  }
+  .repo-bar {
+    width: 100%;
+  }
+  .repo-list {
+    width: 100%;
+  }
+}
